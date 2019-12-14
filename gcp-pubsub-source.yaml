@@ -6,7 +6,7 @@ metadata:
 spec:
   topic: watermark-document
   sink:
-    uri: http://worker-service.default.34.82.141.113.nip.io/ 
+    uri: http://worker-service.default.35.189.216.193.nip.io/ 
 ---
 apiVersion: events.cloud.google.com/v1alpha1
 kind: PubSub
@@ -15,7 +15,7 @@ metadata:
 spec:
   topic: watermark-status
   sink:
-    uri: http://status-service.default.34.82.141.113.nip.io/
+    uri: http://status-service.default.35.189.216.193.nip.io/
 ---
 apiVersion: events.cloud.google.com/v1alpha1
 kind: PubSub
@@ -24,7 +24,7 @@ metadata:
 spec:
   topic: watermark-document
   sink:
-    uri: http://result-service.default.34.82.141.113.nip.io/
+    uri: http://result-service.default.35.189.216.193.nip.io/
 ---
 apiVersion: events.cloud.google.com/v1alpha1
 kind: PubSub
@@ -33,4 +33,4 @@ metadata:
 spec:
   topic: watermark-status
   sink:
-    uri: http://result-service.default.34.82.141.113.nip.io/
+    uri: http://result-service.default.35.189.216.193.nip.io/

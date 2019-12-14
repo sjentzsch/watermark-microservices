@@ -38,20 +38,20 @@ gcloud beta container clusters create $CLUSTER_NAME \
 
 ```
 kubectl apply --selector knative.dev/crd-install=true \
-   --filename https://github.com/knative/serving/releases/download/v0.10.0/serving.yaml \
-   --filename https://github.com/knative/eventing/releases/download/v0.10.0/release.yaml
+   --filename https://github.com/knative/serving/releases/download/v0.11.0/serving.yaml \
+   --filename https://github.com/knative/eventing/releases/download/v0.11.0/release.yaml
 
-kubectl apply --filename https://github.com/knative/serving/releases/download/v0.10.0/serving.yaml \
-   --filename https://github.com/knative/eventing/releases/download/v0.10.0/release.yaml
+kubectl apply --filename https://github.com/knative/serving/releases/download/v0.11.0/serving.yaml \
+   --filename https://github.com/knative/eventing/releases/download/v0.11.0/release.yaml
 
-kubectl apply -f https://raw.githubusercontent.com/knative/serving/master/third_party/istio-1.3.5/istio-knative-extras.yaml
+kubectl apply -f https://raw.githubusercontent.com/knative/serving/master/third_party/istio-1.3.6/istio-knative-extras.yaml
 ```
 
 * Create service account credentials with permissions to access firestore and pubsub.
 * Export credentials in json and convert into base64. Edit google-cloud-key-secret.yaml and replace `<KEY HERE IN BASE64>`
 
 ```
-kubectl apply -f google-cloud-key-secret.yaml
+kubectl --namespace default create secret generic google-cloud-key --from-file=key.json=plucky-door-200208-554e1246b55a.json
 ```
 
 * Config Domain
@@ -100,9 +100,9 @@ Install PubSub
 
 ```
 kubectl apply --selector events.cloud.google.com/crd-install=true \
---filename https://github.com/google/knative-gcp/releases/download/v0.10.0/cloud-run-events.yaml
+--filename https://github.com/google/knative-gcp/releases/download/v0.11.0/cloud-run-events.yaml
 
-kubectl apply --filename https://github.com/google/knative-gcp/releases/download/v0.10.0/cloud-run-events.yaml
+kubectl apply --filename https://github.com/google/knative-gcp/releases/download/v0.11.0/cloud-run-events.yaml
 ```
 
 Open gcp-pubsub-source.yaml, update the sink urls with the service urls and apply the configuration
