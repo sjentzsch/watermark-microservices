@@ -19,8 +19,8 @@ A microservices based prject to watermark a document asynchronously.
 * Create gcloud cluster :- n1-standard-1 VM 1-5 nodes with istio setup
 
 ```
-export CLUSTER_NAME=knative
-export CLUSTER_ZONE=us-west1-c
+export CLUSTER_NAME=watermark-demo
+export CLUSTER_ZONE=europe-west1-b
 ```
 
 ```
