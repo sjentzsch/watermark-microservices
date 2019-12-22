@@ -1,10 +1,7 @@
 const { PubSub } = require('@google-cloud/pubsub');
 
-// Move to env variable
-const projectId = 'watermark-260413';
-
 async function publishEvent(topicName, data) {
-  const pubsub = new PubSub({ projectId });
+  const pubsub = new PubSub();
 
   try {
     await pubsub.createTopic(topicName)

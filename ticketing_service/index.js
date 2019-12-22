@@ -1,30 +1,55 @@
 const express = require('express');
-const express_graphql = require('express-graphql');
-const { schema } = require('./graphql/schema');
-const { rootValue } = require('./graphql/rootValue');
-const { publishEvent } = require('./lib/cloudEvent');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use('/graphql', express_graphql({
-  schema,
-  rootValue,
-  graphiql: process.env.NODE_ENV == 'development'
-}));
+const { pingRequest, indexRequest } = require('./controllers/watermarkController');
+const { graphQlMiddleware } = require('./controllers/graphqlController');
+const { createTopic, createPubsub } = require('./lib/pubsub');
 
-app.get('/', (_, res) => {
-  res.send('watermark ticketing service');
-});
+app.get('/', indexRequest);
 
 // heartbeat
-app.get('/ping', (_, res) => {
-  res.send('pong');
-})
+app.get('/ping', pingRequest)
 
-app.get('/test-publish', async (req, res) => {
-  const message = await publishEvent('watermark-document', JSON.stringify({ title: 'test-document' }))
-  res.json(`sent messge ${message}`);
-});
+//Graphql middleware
+app.use('/graphql', graphQlMiddleware);
 
-app.listen(PORT, () => console.log(`Ticketing service app listening on port ${PORT}!`));
+const verifyGoogleCreds = () => {
+  try {
+    const credsPath = process.env.GOOGLE_APPLICATION_CREDENTIALS
+    const creds = require(credsPath);
+    return creds && creds.project_id;
+  } catch (error) {
+    return false;
+  }
+}
 
+const createTopics = async (pubsub) => {
+  try {
+    await Promise.all([createTopic(pubsub, 'watermark-document'), createTopic(pubsub, 'watermark-status')]);
+    return topics;
+  } catch (error) {
+    return false;
+  }
+}
+
+const startServer = async (port) => {
+  if (!verifyGoogleCreds())
+    return console.error('Unable to start server', 'Google credentials are missing');
+  const pubsub = createPubsub();
+  const topics = await createTopics(pubsub);
+  if (!topics)
+    console.log('unable to create topics, likely that topic already exists');
+  app.listen(port, () => console.log(`Ticketing service app listening on port ${port}!`));
+}
+
+if (require.main === module) {
+  console.log('starting up');
+  startServer(PORT);
+}
+
+module.exports = {
+  startServer,
+  verifyGoogleCreds,
+  createTopics
+}

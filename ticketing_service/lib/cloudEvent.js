@@ -1,21 +1,10 @@
-const { PubSub } = require('@google-cloud/pubsub');
-
-// TODO move it to env
-const projectId = 'watermark-260413';
+const pubsubLib = require('./pubsub');
 
 async function publishEvent(topicName, data) {
-  const pubsub = new PubSub({ projectId });
+  const pubsub = pubsubLib.createPubsub();
 
-  try {
-    await pubsub.createTopic(topicName)
-  } catch (error) {
-    console.log('unable to create topic, likely that topic already exists');
-  }
-
-  const dataBuffer = Buffer.from(data);
-
-  const messageId = await pubsub.topic(topicName).publish(dataBuffer);
-  console.log(`Message ${messageId} published.`);
+  const messageId = await pubsubLib.publish(pubsub, topicName, data);
+  console.log(`Message ${messageId} published to topic ${topicName}`);
   return messageId;
 }
 
